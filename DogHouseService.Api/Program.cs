@@ -24,13 +24,14 @@ builder.Services.AddDbContext<DogHouseContext>(options =>
 builder.Services.AddScoped<IDogService, DogService>();
 
 // Add memory cache for rate limiting
-// builder.Services.AddMemoryCache();
+builder.Services.AddMemoryCache();
 
 // Configure rate limiting
-// builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection("RateLimiting"));
-// builder.Services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
-// builder.Services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
-// builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection("RateLimiting"));
+builder.Services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+builder.Services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+builder.Services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
 
 // Add AutoMapper
 builder.Services.InstallMappers();
@@ -53,7 +54,7 @@ app.UseRouting();
 app.UseAuthorization();
 
 // Enable rate limiting
-// app.UseIpRateLimiting();
+app.UseIpRateLimiting();
 
 app.UseEndpoints(endpoints =>
 {
