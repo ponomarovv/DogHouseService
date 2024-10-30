@@ -9,6 +9,7 @@ using DogHouseService.BLL.Models;
 using DogHouseService.BLL.Services;
 using DogHouseService.DAL.Data;
 using DogHouseService.DAL.Models;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
@@ -40,16 +41,21 @@ namespace DogHouseService.Tests
                 new Dog { Name = "Neo", Color = "red & amber", TailLength = 22, Weight = 32 },
                 new Dog { Name = "Jessy", Color = "black & white", TailLength = 7, Weight = 14 }
             };
-            var dogsQueryable = dogs.AsQueryable();
-            _contextMock.Setup(c => c.Dogs).Returns((DbSet<Dog>)dogsQueryable);
+            var dogsDbSetMock = new Mock<DbSet<Dog>>();
+            dogsDbSetMock.As<IQueryable<Dog>>().Setup(m => m.Provider).Returns(dogs.AsQueryable().Provider);
+            dogsDbSetMock.As<IQueryable<Dog>>().Setup(m => m.Expression).Returns(dogs.AsQueryable().Expression);
+            dogsDbSetMock.As<IQueryable<Dog>>().Setup(m => m.ElementType).Returns(dogs.AsQueryable().ElementType);
+            dogsDbSetMock.As<IQueryable<Dog>>().Setup(m => m.GetEnumerator()).Returns(dogs.AsQueryable().GetEnumerator());
+
+            _contextMock.Setup(c => c.Dogs).Returns(dogsDbSetMock.Object);
 
             // Act
             var result = await _dogService.GetDogsAsync();
 
             // Assert
-            Assert.Equal(2, result.Count());
-            Assert.Equal("Neo", result.First().Name);
-            Assert.Equal("Jessy", result.Last().Name);
+            result.Should().HaveCount(2);
+            result.First().Name.Should().Be("Neo");
+            result.Last().Name.Should().Be("Jessy");
         }
 
         [Fact]
@@ -57,16 +63,19 @@ namespace DogHouseService.Tests
         {
             // Arrange
             var newDog = new DogModel { Name = "Doggy", Color = "red", TailLength = 173, Weight = 33 };
-            _contextMock.Setup(c => c.Dogs.Add(It.IsAny<Dog>())).Callback<Dog>(dog => dog.Id = 1);
+            var dogsDbSetMock = new Mock<DbSet<Dog>>();
+            dogsDbSetMock.Setup(m => m.Add(It.IsAny<Dog>())).Callback<Dog>(dog => dog.Id = 1);
+
+            _contextMock.Setup(c => c.Dogs).Returns(dogsDbSetMock.Object);
 
             // Act
             var result = await _dogService.CreateDogAsync(newDog);
 
             // Assert
-            Assert.Equal("Doggy", result.Name);
-            Assert.Equal("red", result.Color);
-            Assert.Equal(173, result.TailLength);
-            Assert.Equal(33, result.Weight);
+            result.Name.Should().Be("Doggy");
+            result.Color.Should().Be("red");
+            result.TailLength.Should().Be(173);
+            result.Weight.Should().Be(33);
             _contextMock.Verify(c => c.Dogs.Add(It.IsAny<Dog>()), Times.Once);
             _contextMock.Verify(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
         }
@@ -76,10 +85,17 @@ namespace DogHouseService.Tests
         {
             // Arrange
             var newDog = new DogModel { Name = "Neo", Color = "red", TailLength = 173, Weight = 33 };
-            _contextMock.Setup(c => c.Dogs.AnyAsync(It.IsAny<Dog>())).ReturnsAsync(true);
+            var dogsDbSetMock = new Mock<DbSet<Dog>>();
+            dogsDbSetMock.As<IQueryable<Dog>>().Setup(m => m.Provider).Returns(new List<Dog> { new Dog { Name = "Neo" } }.AsQueryable().Provider);
+            dogsDbSetMock.As<IQueryable<Dog>>().Setup(m => m.Expression).Returns(new List<Dog> { new Dog { Name = "Neo" } }.AsQueryable().Expression);
+            dogsDbSetMock.As<IQueryable<Dog>>().Setup(m => m.ElementType).Returns(new List<Dog> { new Dog { Name = "Neo" } }.AsQueryable().ElementType);
+            dogsDbSetMock.As<IQueryable<Dog>>().Setup(m => m.GetEnumerator()).Returns(new List<Dog> { new Dog { Name = "Neo" } }.AsQueryable().GetEnumerator());
+
+            _contextMock.Setup(c => c.Dogs).Returns(dogsDbSetMock.Object);
 
             // Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() => _dogService.CreateDogAsync(newDog));
+            Func<Task> act = () => _dogService.CreateDogAsync(newDog);
+            await act.Should().ThrowAsync<InvalidOperationException>();
         }
 
         [Fact]
@@ -87,9 +103,13 @@ namespace DogHouseService.Tests
         {
             // Arrange
             var newDog = new DogModel { Name = "Doggy", Color = "red", TailLength = -1, Weight = 33 };
+            var dogsDbSetMock = new Mock<DbSet<Dog>>();
+
+            _contextMock.Setup(c => c.Dogs).Returns(dogsDbSetMock.Object);
 
             // Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() => _dogService.CreateDogAsync(newDog));
+            Func<Task> act = () => _dogService.CreateDogAsync(newDog);
+            await act.Should().ThrowAsync<InvalidOperationException>();
         }
     }
 }

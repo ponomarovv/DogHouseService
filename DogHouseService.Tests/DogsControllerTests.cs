@@ -11,6 +11,7 @@ using DogHouseService.BLL.Interfaces;
 using DogHouseService.BLL.Models;
 using DogHouseService.DAL.Data;
 using DogHouseService.DAL.Models;
+using FluentAssertions;
 using Microsoft.VisualStudio.TestPlatform.TestHost;
 using Xunit;
 
@@ -56,7 +57,7 @@ namespace DogHouseService.Tests
             response.EnsureSuccessStatusCode();
 
             var responseString = await response.Content.ReadAsStringAsync();
-            Assert.Equal("\"Dogshouseservice.Version1.0.1\"", responseString);
+            responseString.Should().Be("\"Dogshouseservice.Version1.0.1\"");
         }
 
         [Fact]
@@ -94,9 +95,9 @@ namespace DogHouseService.Tests
             response.EnsureSuccessStatusCode();
 
             var dogs = await response.Content.ReadFromJsonAsync<Dog[]>();
-            Assert.Equal(2, dogs.Length);
-            Assert.Equal("Neo", dogs[0].Name);
-            Assert.Equal("Jessy", dogs[1].Name);
+            dogs.Should().HaveCount(2);
+            dogs[0].Name.Should().Be("Neo");
+            dogs[1].Name.Should().Be("Jessy");
         }
 
         [Fact]
@@ -131,10 +132,10 @@ namespace DogHouseService.Tests
             response.EnsureSuccessStatusCode();
 
             var createdDog = await response.Content.ReadFromJsonAsync<Dog>();
-            Assert.Equal("Doggy", createdDog.Name);
-            Assert.Equal("red", createdDog.Color);
-            Assert.Equal(173, createdDog.TailLength);
-            Assert.Equal(33, createdDog.Weight);
+            createdDog.Name.Should().Be("Doggy");
+            createdDog.Color.Should().Be("red");
+            createdDog.TailLength.Should().Be(173);
+            createdDog.Weight.Should().Be(33);
         }
 
         [Fact]
@@ -169,7 +170,7 @@ namespace DogHouseService.Tests
 
             var newDog = new Dog { Name = "Neo", Color = "red", TailLength = 173, Weight = 33 };
             var response = await client.PostAsJsonAsync("/dogs", newDog);
-            Assert.Equal(System.Net.HttpStatusCode.BadRequest, response.StatusCode);
+            response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
         }
 
         [Fact]
@@ -201,7 +202,7 @@ namespace DogHouseService.Tests
 
             var newDog = new Dog { Name = "Doggy", Color = "red", TailLength = -1, Weight = 33 };
             var response = await client.PostAsJsonAsync("/dogs", newDog);
-            Assert.Equal(System.Net.HttpStatusCode.BadRequest, response.StatusCode);
+            response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
         }
     }
 }
