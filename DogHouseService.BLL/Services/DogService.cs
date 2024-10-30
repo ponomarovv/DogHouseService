@@ -4,7 +4,7 @@ using DogHouseService.BLL.Interfaces;
 using DogHouseService.BLL.Models;
 using DogHouseService.DAL.Data;
 using DogHouseService.DAL.Models;
-using DogHouseService.BLL.Helpers;
+using DogHouseService.BLL.Extensions;
 
 namespace DogHouseService.BLL.Services
 {
