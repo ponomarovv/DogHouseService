@@ -1,8 +1,4 @@
-﻿using Moq;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using DogHouseService.Api.Mapping;
 using DogHouseService.BLL.Interfaces;
 using DogHouseService.BLL.Models;
@@ -11,9 +7,9 @@ using DogHouseService.DAL.Data;
 using DogHouseService.DAL.Models;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using Xunit;
+using Moq;
 
-namespace DogHouseService.Tests
+namespace DogHouseService.Tests.BLL
 {
     public class DogServiceTests
     {
@@ -62,14 +58,14 @@ namespace DogHouseService.Tests
         public async Task CreateDogAsync_CreatesDog()
         {
             // Arrange
-            var newDog = new DogModel { Name = "Doggy", Color = "red", TailLength = 173, Weight = 33 };
+            var newDogModel = new DogModel { Name = "Doggy", Color = "red", TailLength = 173, Weight = 33 };
             var dogsDbSetMock = new Mock<DbSet<Dog>>();
             dogsDbSetMock.Setup(m => m.Add(It.IsAny<Dog>())).Callback<Dog>(dog => dog.Id = 1);
 
             _contextMock.Setup(c => c.Dogs).Returns(dogsDbSetMock.Object);
 
             // Act
-            var result = await _dogService.CreateDogAsync(newDog);
+            var result = await _dogService.CreateDogAsync(newDogModel);
 
             // Assert
             result.Name.Should().Be("Doggy");
@@ -84,7 +80,7 @@ namespace DogHouseService.Tests
         public async Task CreateDogAsync_ThrowsExceptionForDuplicateName()
         {
             // Arrange
-            var newDog = new DogModel { Name = "Neo", Color = "red", TailLength = 173, Weight = 33 };
+            var newDogModel = new DogModel { Name = "Neo", Color = "red", TailLength = 173, Weight = 33 };
             var dogsDbSetMock = new Mock<DbSet<Dog>>();
             dogsDbSetMock.As<IQueryable<Dog>>().Setup(m => m.Provider).Returns(new List<Dog> { new Dog { Name = "Neo" } }.AsQueryable().Provider);
             dogsDbSetMock.As<IQueryable<Dog>>().Setup(m => m.Expression).Returns(new List<Dog> { new Dog { Name = "Neo" } }.AsQueryable().Expression);
@@ -94,22 +90,22 @@ namespace DogHouseService.Tests
             _contextMock.Setup(c => c.Dogs).Returns(dogsDbSetMock.Object);
 
             // Act & Assert
-            Func<Task> act = () => _dogService.CreateDogAsync(newDog);
-            await act.Should().ThrowAsync<InvalidOperationException>();
+            Func<Task> act = () => _dogService.CreateDogAsync(newDogModel);
+            await act.Should().ThrowAsync<InvalidOperationException>().WithMessage("A dog with the same name already exists.");
         }
 
         [Fact]
         public async Task CreateDogAsync_ThrowsExceptionForNegativeTailLength()
         {
             // Arrange
-            var newDog = new DogModel { Name = "Doggy", Color = "red", TailLength = -1, Weight = 33 };
+            var newDogModel = new DogModel { Name = "Doggy", Color = "red", TailLength = -1, Weight = 33 };
             var dogsDbSetMock = new Mock<DbSet<Dog>>();
 
             _contextMock.Setup(c => c.Dogs).Returns(dogsDbSetMock.Object);
 
             // Act & Assert
-            Func<Task> act = () => _dogService.CreateDogAsync(newDog);
-            await act.Should().ThrowAsync<InvalidOperationException>();
+            Func<Task> act = () => _dogService.CreateDogAsync(newDogModel);
+            await act.Should().ThrowAsync<InvalidOperationException>().WithMessage("Tail length cannot be a negative number.");
         }
     }
 }

@@ -1,15 +1,9 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using AspNetCoreRateLimit;
+using DogHouseService.Api.Extensions;
 using DogHouseService.BLL.Interfaces;
 using DogHouseService.BLL.Services;
 using DogHouseService.DAL.Data;
-using AspNetCoreRateLimit;
-using AutoMapper;
-using DogHouseService.Api.Extensions;
-using DogHouseService.Api.Mapping;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -69,3 +63,8 @@ app.UseSwaggerUI(c =>
 });
 
 app.Run();
+
+namespace DogHouseService.Api
+{
+    public partial class Program { }
+}

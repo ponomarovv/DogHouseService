@@ -3,14 +3,13 @@ using DogHouseService.BLL.Models;
 using DogHouseService.DAL.Models;
 using DogHouseService.Api.Models;
 
-namespace DogHouseService.Api.Mapping
+namespace DogHouseService.Api.Mapping;
+
+public class MappingProfile : Profile
 {
-    public class MappingProfile : Profile
+    public MappingProfile()
     {
-        public MappingProfile()
-        {
-            CreateMap<Dog, DogModel>().ReverseMap();
-            CreateMap<DogModel, DogDto>().ReverseMap();
-        }
+        CreateMap<Dog, DogModel>().ReverseMap();
+        CreateMap<DogModel, DogDto>().ReverseMap();
     }
 }
