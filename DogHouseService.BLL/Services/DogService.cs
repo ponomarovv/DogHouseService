@@ -7,6 +7,7 @@ using DogHouseService.BLL.Interfaces;
 using DogHouseService.BLL.Models;
 using DogHouseService.DAL.Data;
 using DogHouseService.DAL.Models;
+using DogHouseService.BLL.Helpers;
 
 namespace DogHouseService.BLL.Services
 {
@@ -27,10 +28,7 @@ namespace DogHouseService.BLL.Services
 
             if (!string.IsNullOrEmpty(attribute) && !string.IsNullOrEmpty(order))
             {
-                if (attribute == "name" || attribute == "color" || attribute == "tail_length" || attribute == "weight")
-                {
-                    query = order.ToLower() == "desc" ? query.OrderByDescending(attribute) : query.OrderBy(attribute);
-                }
+                query = query.OrderBy(attribute, order.ToLower() == "asc");
             }
 
             var dogs = await query
