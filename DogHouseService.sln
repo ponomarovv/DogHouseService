@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DogHouseService.BLL", "DogH
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DogHouseService.DAL", "DogHouseService.DAL\DogHouseService.DAL.csproj", "{80B4795B-C6EC-4DAF-B43C-CC74D9765B76}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5DBEE079-422F-46E4-B21D-367815BBA390}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DogHouseService.Tests", "DogHouseService.Tests\DogHouseService.Tests.csproj", "{5C699F5C-088B-4211-BB4D-309AD5B0E897}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,11 +31,18 @@ Global
 		{80B4795B-C6EC-4DAF-B43C-CC74D9765B76}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80B4795B-C6EC-4DAF-B43C-CC74D9765B76}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{80B4795B-C6EC-4DAF-B43C-CC74D9765B76}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C699F5C-088B-4211-BB4D-309AD5B0E897}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C699F5C-088B-4211-BB4D-309AD5B0E897}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C699F5C-088B-4211-BB4D-309AD5B0E897}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C699F5C-088B-4211-BB4D-309AD5B0E897}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CB186D81-42F6-448F-8403-2F8FB02E6FE1}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5C699F5C-088B-4211-BB4D-309AD5B0E897} = {5DBEE079-422F-46E4-B21D-367815BBA390}
 	EndGlobalSection
 EndGlobal

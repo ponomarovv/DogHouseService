@@ -1,9 +1,7 @@
-﻿using System;
-using System.Linq;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using System.Reflection;
 
-namespace DogHouseService.BLL.Helpers
+namespace DogHouseService.BLL.Extensions
 {
     public static class QueryableExtensions
     {

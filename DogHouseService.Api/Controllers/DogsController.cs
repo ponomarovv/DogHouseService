@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 using AutoMapper;
 using DogHouseService.BLL.Interfaces;
 using DogHouseService.BLL.Models;

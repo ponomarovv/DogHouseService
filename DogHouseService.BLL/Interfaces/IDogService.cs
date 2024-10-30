@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using DogHouseService.BLL.Models;
+﻿using DogHouseService.BLL.Models;
 
 namespace DogHouseService.BLL.Interfaces
 {
