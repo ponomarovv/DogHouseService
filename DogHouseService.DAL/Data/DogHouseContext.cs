@@ -5,10 +5,6 @@ namespace DogHouseService.DAL.Data;
 
 public class DogHouseContext : DbContext
 {
-    public DogHouseContext()
-    {
-    }
-
     public DogHouseContext(DbContextOptions<DogHouseContext> options) : base(options)
     {
     }
