@@ -50,10 +50,7 @@ app.UseAuthorization();
 // Enable rate limiting
 app.UseIpRateLimiting();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
-});
+app.MapControllers();
 
 // Enable Swagger UI
 app.UseSwagger();
