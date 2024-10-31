@@ -8,7 +8,8 @@ public static class QueryableExtensions
     public static IOrderedQueryable<T> OrderBy<T>(this IQueryable<T> source, string propertyName, bool ascending)
     {
         var type = typeof(T);
-        var property = type.GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+        var property = type.GetProperty(propertyName,
+            BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
 
         if (property == null)
             throw new ArgumentException($"No property '{propertyName}' found on '{type.Name}'");
